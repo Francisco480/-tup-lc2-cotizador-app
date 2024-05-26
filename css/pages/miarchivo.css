@@ -153,3 +153,11 @@ td {
     font-size: 20px;
     /* ojo responsive */
 }
+
+.footer-lista ul li a:visited {
+    color: black;
+  }
+  
+  .footer-lista ul li a {
+    color: black;
+  }
