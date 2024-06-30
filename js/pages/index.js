@@ -419,7 +419,7 @@ function handleChange() {
     } else {
         mostrarTodos = false;
         // Buscar la cotización en arregloIndex
-        const cotizacion = arregloIndex.find(item => item.nombre.toLowerCase() === nombreCotizacion.toLowerCase());
+        const cotizacion = arregloIndex.find(item => item.nombre.toLowerCase().trim() === nombreCotizacion.toLowerCase().trim());
         if (cotizacion) {
             mostrarCotizacionIndividual(cotizacion);
         } else {
@@ -454,6 +454,10 @@ function mostrarCotizaciones() {
         
         itemDiv.innerHTML = itemHtml;
         plantillaPrecios.appendChild(itemDiv);
+
+        // Agregar evento clic a la estrella de cada ítem
+        const star = itemDiv.querySelector('.fa-star');
+        star.addEventListener('click', toggleFavorito);
     });
 }
 
@@ -477,10 +481,15 @@ function mostrarCotizacionIndividual(cotizacion) {
                 </div>
             </div>
         </div>
+        <i class="fa-solid fa-star"></i>
     `;
     
     itemDiv.innerHTML = itemHtml;
     plantillaPrecios.appendChild(itemDiv);
+
+    // Agregar evento clic a la estrella
+    const star = itemDiv.querySelector('.fa-star');
+    star.addEventListener('click', toggleFavorito);
 }
 
 // Función para mostrar un mensaje de error
@@ -512,8 +521,60 @@ window.onload = cargarCotizaciones;
 
 // Escuchar cambios en el combobox
 document.getElementById("combobox").addEventListener("change", handleChange);
-
+/*
 // Función para manejar el clic en la estrella
+function toggleFavorito(event) {
+    const star = event.target;
+    star.classList.toggle('active'); // Activar/desactivar clase 'active'
+
+     //Obtener la cotización asociada al ítem
+    const tipoMoneda = star.parentElement.querySelector('h3').textContent;
+    const cotizacion = arregloIndex.find(item => item.nombre === tipoMoneda);
+
+     //Guardar en localStorage la cotización favorita
+    if (star.classList.contains('active')) {
+        localStorage.setItem('favorito_' + tipoMoneda, JSON.stringify(cotizacion));
+    } else {
+        localStorage.removeItem('favorito_' + tipoMoneda);
+    }
+}*/
+
+/*function toggleFavorito(event) {
+    const star = event.target;
+    star.classList.toggle('active'); // Activar/desactivar clase 'active'
+
+    // Obtener la cotización asociada al ítem
+    const tipoMoneda = star.parentElement.querySelector('h3').textContent;
+    const cotizacion = arregloIndex.find(item => item.nombre === tipoMoneda);
+
+    // Obtener las cotizaciones guardadas actualmente
+    let cotizacionesGuardadas = localStorage.getItem('cotizaciones');
+    cotizacionesGuardadas = cotizacionesGuardadas ? JSON.parse(cotizacionesGuardadas) : [];
+
+    // Verificar si la cotización ya está guardada
+    const index = cotizacionesGuardadas.findIndex(item => item.nombre === cotizacion.nombre);
+
+    // Guardar o eliminar la cotización favorita
+    if (star.classList.contains('active')) {
+        if (index === -1) {
+            // Si no está en la lista, agregarla con la fecha actual
+            cotizacion.fecha = new Date().toISOString(); // Fecha actual en formato ISO 8601
+            cotizacionesGuardadas.push(cotizacion);
+        }
+    } else {
+        if (index !== -1) {
+            // Si está en la lista, eliminarla
+            cotizacionesGuardadas.splice(index, 1);
+        }
+    }
+
+    // Guardar de nuevo en localStorage
+    localStorage.setItem('cotizaciones', JSON.stringify(cotizacionesGuardadas));
+}*/
+
+
+
+
 function toggleFavorito(event) {
     const star = event.target;
     star.classList.toggle('active'); // Activar/desactivar clase 'active'
@@ -522,15 +583,36 @@ function toggleFavorito(event) {
     const tipoMoneda = star.parentElement.querySelector('h3').textContent;
     const cotizacion = arregloIndex.find(item => item.nombre === tipoMoneda);
 
-    // Guardar en localStorage la cotización favorita
+    // Guardar o eliminar la cotización favorita
     if (star.classList.contains('active')) {
+        // Guardar la cotización con el nombre de la moneda correspondiente
         localStorage.setItem('favorito_' + tipoMoneda, JSON.stringify(cotizacion));
     } else {
+        // Eliminar la cotización guardada
         localStorage.removeItem('favorito_' + tipoMoneda);
     }
+
+    // Obtener las cotizaciones guardadas actualmente
+    let cotizacionesGuardadas = localStorage.getItem('cotizaciones');
+    cotizacionesGuardadas = cotizacionesGuardadas ? JSON.parse(cotizacionesGuardadas) : [];
+
+    // Actualizar las cotizaciones guardadas
+    const index = cotizacionesGuardadas.findIndex(item => item.nombre === cotizacion.nombre);
+    if (star.classList.contains('active')) {
+        if (index === -1) {
+            cotizacionesGuardadas.push(cotizacion);
+        }
+    } else {
+        if (index !== -1) {
+            cotizacionesGuardadas.splice(index, 1);
+        }
+    }
+
+    // Guardar de nuevo en localStorage
+    localStorage.setItem('cotizaciones', JSON.stringify(cotizacionesGuardadas));
 }
 
-// Agregar evento clic a todas las estrellas
+// Agregar evento clic a todas las estrellas al cargar el DOM
 document.addEventListener('DOMContentLoaded', () => {
     const estrellas = document.querySelectorAll('.fa-star');
     estrellas.forEach(star => {
