@@ -258,3 +258,15 @@ i.fa-solid.fa-star {
         gap: 0.5rem;
     }
 }
+
+
+/*Aca pruebo lo de las estrellas*/
+/* Agregar nuevo estilo para la estrella activada */
+.fa-star.active:before {
+    color: #4672C4; /* Cambio de color a azul más oscuro */
+}
+
+/* Cambiar para hoover */
+.fa-star:hover:before {
+    color: #4672C4;
+}

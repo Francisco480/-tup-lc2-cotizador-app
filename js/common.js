@@ -128,3 +128,55 @@ fetch("https://dolarapi.com/v1/dolares")
   // en inicio se actualiza cada 5 minutos
   // en mi archivo en local storage ( se guardan el historial de la cotizacion en favoritos en mi archivo del index a mi archivo)
   // en mi informe se actualiza cada 5 minutos
+
+
+
+
+
+  //ACÁ ESTOY PROBANDO EL CAMBIO DE OPINIONES
+  // Array de opiniones (puedes agregar más si quieres)
+  const opiniones = [
+    {
+      imagen: "img/fran.png",
+        nombre: "Poli Veliz Francisco Alberto",
+        comentario: "Formamos un gran equipo con Ninotti Cristian y Gonzalez Nahuel."
+    },
+    {
+        imagen: "img/cris.jpg",
+        nombre: "Ninotti Cristian",
+        comentario: "Formamos un gran equipo con Poli Veliz Francisco y Gonzalez Nahuel."
+    },
+    {
+        imagen: "img/nahue.jpg",
+        nombre: "Gonzalez Nahuel",
+        comentario: "Formamos un gran equipo con Ninotti Cristian y Poli Veliz Francisco."
+    }
+];
+
+let index = 0;
+const opinionContainer = document.getElementById('opinionContainer');
+
+// Función para cambiar la opinión cada 5 segundos
+function cambiarOpinion() {
+    opinionContainer.innerHTML = `
+        <div class="opinion-img">
+            <img src="${opiniones[index].imagen}" alt="${opiniones[index].nombre}">
+        </div>
+        <div class="opinion-nombre">
+            <h2>${opiniones[index].nombre}</h2>
+            <p>${opiniones[index].comentario}</p>
+        </div>
+    `;
+    index = (index + 1) % opiniones.length; // Avanza al siguiente índice circularmente
+}
+
+// Cambiar la opinión inicial
+cambiarOpinion();
+
+// Cambiar la opinión cada 5 segundos
+setInterval(cambiarOpinion, 5000);
+
+
+
+
+
