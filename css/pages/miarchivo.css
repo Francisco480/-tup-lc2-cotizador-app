@@ -28,6 +28,10 @@ tr {
     color: rgb(28, 61, 124);
 }
 
+.fa-print:hover{
+    color: red;
+}
+
 /* CONTENEDOR GENERAL DE LA PÁGINA "MI ARCHIVO"*/
 
 .contenedor-general {
@@ -152,6 +156,9 @@ td {
     color: #C55A11;
     font-size: 20px;
     /* ojo responsive */
+}
+.fa-eraser:hover{
+    color:green
 }
 
 .footer-lista ul li a:visited {
