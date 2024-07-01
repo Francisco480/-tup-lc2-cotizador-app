@@ -759,6 +759,26 @@ function toggleFavorito(event) {
     const tipoMoneda = star.parentElement.querySelector('h3').textContent;
     const cotizacion = arregloIndex.find(item => item.nombre === tipoMoneda);
 
+    // Obtener las cotizaciones guardadas actualmente
+    let cotizacionesGuardadas = localStorage.getItem('cotizaciones');
+    cotizacionesGuardadas = cotizacionesGuardadas ? JSON.parse(cotizacionesGuardadas) : [];
+
+    // Verificar si ya existe una cotización con la misma fecha
+    const existeCotizacion = cotizacionesGuardadas.some(item => {
+        const fechaItem = new Date(item.fechaActualizacion);
+        const fechaCotizacion = new Date(cotizacion.fechaActualizacion);
+        return item.nombre === cotizacion.nombre &&
+               fechaItem.getDate() === fechaCotizacion.getDate() &&
+               fechaItem.getMonth() === fechaCotizacion.getMonth() &&
+               fechaItem.getFullYear() === fechaCotizacion.getFullYear();
+    });
+
+    if (existeCotizacion) {
+        alert("No se puede guardar esta cotización. Ya existe una cotización guardada para esta moneda en el mismo día.");
+        star.classList.remove('active'); // Desactivar la estrella si ya existe
+        return; // No continuar con el guardado
+    }
+
     // Guardar o eliminar la cotización favorita
     if (star.classList.contains('active')) {
         // Guardar la cotización con el nombre de la moneda correspondiente
@@ -767,10 +787,6 @@ function toggleFavorito(event) {
         // Eliminar la cotización guardada
         localStorage.removeItem('favorito_' + tipoMoneda);
     }
-
-    // Obtener las cotizaciones guardadas actualmente
-    let cotizacionesGuardadas = localStorage.getItem('cotizaciones');
-    cotizacionesGuardadas = cotizacionesGuardadas ? JSON.parse(cotizacionesGuardadas) : [];
 
     // Actualizar las cotizaciones guardadas
     const index = cotizacionesGuardadas.findIndex(item => item.nombre === cotizacion.nombre);
