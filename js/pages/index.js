@@ -763,18 +763,21 @@ function toggleFavorito(event) {
     let cotizacionesGuardadas = localStorage.getItem('cotizaciones');
     cotizacionesGuardadas = cotizacionesGuardadas ? JSON.parse(cotizacionesGuardadas) : [];
 
-    // Verificar si ya existe una cotización con la misma fecha
+    // Verificar si ya existe una cotización con la misma fecha, hora, minutos y segundos
     const existeCotizacion = cotizacionesGuardadas.some(item => {
         const fechaItem = new Date(item.fechaActualizacion);
         const fechaCotizacion = new Date(cotizacion.fechaActualizacion);
         return item.nombre === cotizacion.nombre &&
                fechaItem.getDate() === fechaCotizacion.getDate() &&
                fechaItem.getMonth() === fechaCotizacion.getMonth() &&
-               fechaItem.getFullYear() === fechaCotizacion.getFullYear();
+               fechaItem.getFullYear() === fechaCotizacion.getFullYear() &&
+               fechaItem.getHours() === fechaCotizacion.getHours() &&
+               fechaItem.getMinutes() === fechaCotizacion.getMinutes() &&
+               fechaItem.getSeconds() === fechaCotizacion.getSeconds();
     });
 
     if (existeCotizacion) {
-        alert("No se puede guardar esta cotización. Ya existe una cotización guardada para esta moneda en el mismo día.");
+        alert("No se puede guardar esta cotización. Ya existe una cotización guardada para esta moneda en el mismo segundo del mismo día.");
         star.classList.remove('active'); // Desactivar la estrella si ya existe
         return; // No continuar con el guardado
     }
@@ -789,7 +792,8 @@ function toggleFavorito(event) {
     }
 
     // Actualizar las cotizaciones guardadas
-    const index = cotizacionesGuardadas.findIndex(item => item.nombre === cotizacion.nombre);
+    const index = cotizacionesGuardadas.findIndex(item => item.nombre === cotizacion.nombre && 
+                                                          new Date(item.fechaActualizacion).getTime() === new Date(cotizacion.fechaActualizacion).getTime());
     if (star.classList.contains('active')) {
         if (index === -1) {
             cotizacionesGuardadas.push(cotizacion);
@@ -811,3 +815,4 @@ document.addEventListener('DOMContentLoaded', () => {
         star.addEventListener('click', toggleFavorito);
     });
 });
+

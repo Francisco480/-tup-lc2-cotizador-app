@@ -1,3 +1,4 @@
+
 // Variables globales
 let cotizaciones = []; // Arreglo para almacenar las cotizaciones
 
@@ -27,7 +28,7 @@ function mostrarCotizaciones() {
     tablaCotizaciones.innerHTML = ''; // Limpiar contenido anterior
 
     // Ordenar cotizaciones por fecha de actualización de menor a mayor
-    cotizaciones.sort((a, b) => new Date(a.fechaActualizacion) - new Date(b.fechaActualizacion));
+    cotizaciones.sort((b, a) => new Date(a.fechaActualizacion) - new Date(b.fechaActualizacion));
 
     let fechaActual = null;
     cotizaciones.forEach(cotizacion => {
