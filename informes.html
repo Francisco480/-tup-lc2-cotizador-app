@@ -79,7 +79,8 @@
                                                 <option value="Dólar Oficial">Dólar Oficial</option>
                                                 <option value="Dólar Blue">Dólar Blue</option>
                                                 <option value="Dólar Bolsa (MEP)">Dólar Bolsa (MEP)</option>
-                                                <option value="Dólar Contado con Liqui (CCL)">Dólar Contado con Liqui (CCL)</option>
+                                                <option value="Dólar Contado con Liqui (CCL)">Dólar Contado con Liqui
+                                                    (CCL)</option>
                                                 <option value="Dólar Tarjeta">Dólar Tarjeta</option>
                                                 <option value="Dólar Mayorista">Dólar Mayorista</option>
                                                 <option value="Dólar Cripto">Dólar Cripto</option>
@@ -95,12 +96,29 @@
                                     </div>
                                     <div class="mail">
                                         <i class="fa-solid fa-envelope-open-text"></i>
-                                        <a href="#" class="Texto-info">Compartir Información</a>  
+                                        <a href="#" class="Texto-info">Compartir Información</a>
+                                    </div>
+                                    <!-- Modal -->
+                                    <div id="modal" class="modal">
+                                        <div class="modal-content">
+                                            <span id="cerrarModal" class="close">&times;</span>
+                                            <div style="padding: 20px;">
+                                                <h2 style="font-weight: bold;">DATOS DEL DESTINATARIO</h2>
+                                                <form>
+                                                    <label for="nombre">Nombre:</label><br>
+                                                    <input type="text" id="nombre" name="nombre"><br><br>
+                                                    <label for="email">Email:</label><br>
+                                                    <input type="email" id="email" name="email"><br><br>
+                                                    <button type="button" id="cerrarModal">CERRAR</button>
+                                                    <button type="submit">ENVIAR</button>
+                                                </form>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="div-superior-derecha">
-                                <!--<img src="img/grafica.jpg" alt="grafica" class="img-grafica">-->
-                                <canvas id="myChart"></canvas>
+                                    <!--<img src="img/grafica.jpg" alt="grafica" class="img-grafica">-->
+                                    <canvas id="myChart"></canvas>
                                 </div>
                             </div>
                             <div class="div-inferior">
