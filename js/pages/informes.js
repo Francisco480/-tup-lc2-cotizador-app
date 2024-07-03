@@ -589,7 +589,7 @@ function calcularVariacionIconoDirecto(cotizacion) {
           x: {
             ticks: {
               autoSkip: true,
-              maxTicksLimit: 10 // Limitar el número de etiquetas en el eje x para hacerlas más pequeñas
+              maxTicksLimit: 2 // Limitar el número de etiquetas en el eje x para hacerlas más pequeñas
             }
           }
         },
