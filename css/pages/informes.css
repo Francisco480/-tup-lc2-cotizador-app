@@ -425,6 +425,8 @@ td {
 
 
 
+/* Estilos existentes */
+
 /* Estilos para el modal */
 .modal {
     display: none; /* Ocultar el modal por defecto */
@@ -435,11 +437,10 @@ td {
     width: 100%;
     height: 100%;
     overflow: auto;
-    
     background-color: rgba(166, 160, 160, 0.459); /* Fondo semi-transparente */
-  }
-  
-  .modal-content {
+}
+
+.modal-content {
     background-color: yellow;
     margin: 15% auto;
     padding: 20px;
@@ -447,18 +448,18 @@ td {
     width: 80%;
     max-width: 28em;
     border-radius: 2em;
-  }
-  
-  .close {
+}
+
+.close {
     color: #aaa;
     float: right;
     font-size: 28px;
     font-weight: bold;
-  }
-  
-  .close:hover,
-  .close:focus {
+}
+
+.close:hover,
+.close:focus {
     color: black;
     text-decoration: none;
     cursor: pointer;
-  }
+}

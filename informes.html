@@ -12,6 +12,7 @@
     <script src="js/common.js" defer></script>
     <script src="js/pages/informes.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script><!--Aca para el graficador-->
+    
 </head>
 
 <body>
@@ -49,7 +50,7 @@
                             </a>
                         </li>
                     </ul>
-                    <div id="opinionContainer" class="opinion"><!--Cambiar esto-->
+                    <div id="opinionContainer" class="opinion">
                         <div class="opinion-img">
                             <img src="img/fran.png" alt="Francisco">
                         </div>
@@ -96,28 +97,10 @@
                                     </div>
                                     <div class="mail">
                                         <i class="fa-solid fa-envelope-open-text"></i>
-                                        <a href="#" class="Texto-info">Compartir Información</a>
-                                    </div>
-                                    <!-- Modal -->
-                                    <div id="modal" class="modal">
-                                        <div class="modal-content">
-                                            <span id="cerrarModal" class="close">&times;</span>
-                                            <div style="padding: 20px;">
-                                                <h2 style="font-weight: bold;">DATOS DEL DESTINATARIO</h2>
-                                                <form>
-                                                    <label for="nombre">Nombre:</label><br>
-                                                    <input type="text" id="nombre" name="nombre"><br><br>
-                                                    <label for="email">Email:</label><br>
-                                                    <input type="email" id="email" name="email"><br><br>
-                                                    <button type="button" id="cerrarModal">CERRAR</button>
-                                                    <button type="submit">ENVIAR</button>
-                                                </form>
-                                            </div>
-                                        </div>
+                                        <a href="#" id="btnCompartir" class="Texto-info">Compartir Información</a>
                                     </div>
                                 </div>
                                 <div class="div-superior-derecha">
-                                    <!--<img src="img/grafica.jpg" alt="grafica" class="img-grafica">-->
                                     <canvas id="myChart"></canvas>
                                 </div>
                             </div>
@@ -133,72 +116,7 @@
                                         </tr>
                                     </thead>
                                     <tbody id="cuerpo-tabla">
-                                        <tr class="fila">
-                                            <td class="moneda"><b>Dólar Blue</b></td>
-                                        </tr>
-                                        <tr class="fila-contenido-moneda">
-                                            <td></td>
-                                            <td class="columna-fecha">15/04/2024</td>
-                                            <td>$995</td>
-                                            <td>$1015</td>
-                                            <td class="columna-borrar"><i class="fa-regular fa-circle-up"></i></i></td>
-                                        </tr>
-                                        <tr class="fila-contenido-moneda">
-                                            <td></td>
-                                            <td class="columna-fecha">15/04/2024</td>
-                                            <td>$995</td>
-                                            <td>$1015</td>
-                                            <td class="columna-borrar"><i class="fa-regular fa-circle-down"></i></td>
-                                        </tr>
-                                        <tr class="fila-contenido-moneda">
-                                            <td></td>
-                                            <td class="columna-fecha">15/04/2024</td>
-                                            <td>$995</td>
-                                            <td>$1015</td>
-                                            <td class="columna-borrar"><i class="fa-regular fa-circle-up"></i></i></td>
-                                        </tr>
-                                        <tr class="fila-contenido-moneda">
-                                            <td></td>
-                                            <td class="columna-fecha">15/04/2024</td>
-                                            <td>$995</td>
-                                            <td>$1015</td>
-                                            <td class="columna-borrar"><i class="fa-regular fa-circle-down"></i></td>
-                                        </tr>
-                                        <tr class="fila-contenido-moneda">
-                                            <td></td>
-                                            <td class="columna-fecha">15/04/2024</td>
-                                            <td>$995</td>
-                                            <td>$1015</td>
-                                            <td class="columna-borrar"><i class="fa-regular fa-circle-down"></i></td>
-                                        </tr>
-                                        <tr class="fila-contenido-moneda">
-                                            <td></td>
-                                            <td class="columna-fecha">15/04/2024</td>
-                                            <td>$995</td>
-                                            <td>$1015</td>
-                                            <td class="columna-borrar"><i class="fa-regular fa-circle-down"></i></td>
-                                        </tr>
-                                        <tr class="fila-contenido-moneda">
-                                            <td></td>
-                                            <td class="columna-fecha">15/04/2024</td>
-                                            <td>$995</td>
-                                            <td>$1015</td>
-                                            <td class="columna-borrar"><i class="fa-regular fa-circle-down"></i></td>
-                                        </tr>
-                                        <tr class="fila-contenido-moneda">
-                                            <td></td>
-                                            <td class="columna-fecha">15/04/2024</td>
-                                            <td>$995</td>
-                                            <td>$1015</td>
-                                            <td class="columna-borrar"><i class="fa-regular fa-circle-down"></i></td>
-                                        </tr>
-                                        <tr class="fila-contenido-moneda">
-                                            <td></td>
-                                            <td class="columna-fecha">15/04/2024</td>
-                                            <td>$995</td>
-                                            <td>$1015</td>
-                                            <td class="columna-borrar"><i class="fa-regular fa-circle-down"></i></td>
-                                        </tr>
+                                        <!-- Aquí se llenarán las filas con JavaScript -->
                                     </tbody>
                                     <tfoot class="foot-tabla">
                                         <tr>
@@ -246,7 +164,7 @@
                     <ul class="desarrollado-por">
                         <li>
                             <p><b>Desarrollado por:</b></p>
-                            <p>Poli Veliz Francisco Alberto (53393)</p> <!--Nombre de cada uno y numero de sysacad -->
+                            <p>Poli Veliz Francisco Alberto (53393)</p>
                             <p>TUP 08 - 2024</p>
                         </li>
                     </ul>
@@ -255,6 +173,26 @@
                     <p><b>TUP - Catedra de Laboratorio de Computación 2 - Año 2024</b></p>
                 </div>
             </footer>
+        </div>
+    </div>
+
+    <!-- Modal--> 
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div style="padding: 20px;">
+                <h2 style="font-weight: bold;">DATOS DEL DESTINATARIO</h2>
+                <form>
+                    <label for="nombre">Nombre:</label><br>
+                    <input type="text" id="nombre" name="nombre" required><br><br>
+                    <label for="email">Email:</label><br>
+                    <input type="email" id="email" name="email" required><br><br>
+                    <label for="mensaje">Mensaje:</label><br>
+                    <textarea id="mensaje" name="mensaje" rows="4" cols="50"></textarea><br><br>
+                    <button type="button" id="cerrarModal">Cerrar</button>
+                    <input type="submit" value="Enviar">
+                </form>
+            </div>
         </div>
     </div>
 </body>

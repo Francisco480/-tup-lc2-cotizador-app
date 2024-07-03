@@ -366,7 +366,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
 */
 
-
 document.addEventListener('DOMContentLoaded', function () {
   const cotizaciones = JSON.parse(localStorage.getItem('cotizaciones')) || [];
   const comboBox = document.getElementById('combobox');
@@ -398,9 +397,11 @@ document.addEventListener('DOMContentLoaded', function () {
     let cotizacionesFiltradas = [];
     if (nombreMoneda === "Seleccionar todos" || !nombreMoneda) {
       cotizacionesFiltradas = cotizaciones;
+      actualizarGraficoNull(nombreMoneda); // Llamar a actualizarGraficoNull
     } else {
       const monedaFiltrar = mapeoCombobox[nombreMoneda];
       cotizacionesFiltradas = cotizaciones.filter(cotizacion => cotizacion.nombre === monedaFiltrar);
+      actualizarGrafico(nombreMoneda); // Llamar a actualizarGrafico con nombreMoneda específico
     }
 
     // Ordenar cotizaciones por fecha descendente
@@ -444,26 +445,59 @@ document.addEventListener('DOMContentLoaded', function () {
         // Celda para la compra
         const celdaCompra = document.createElement('td');
         celdaCompra.textContent = cotizacion.compra;
+        celdaCompra.classList.add('columna-compra');
         filaMoneda.appendChild(celdaCompra);
 
         // Celda para la venta
         const celdaVenta = document.createElement('td');
         celdaVenta.textContent = cotizacion.venta;
+        celdaVenta.classList.add('columna-venta');
         filaMoneda.appendChild(celdaVenta);
 
         // Celda para la variación
-        const celdaVariacion = document.createElement('td');
-        const iconoVariacion = document.createElement('i');
-        iconoVariacion.classList.add('fa-regular', calcularVariacionIcono(cotizacion));
-        celdaVariacion.appendChild(iconoVariacion);
-        filaMoneda.appendChild(celdaVariacion);
+const celdaVariacion = document.createElement('td');
+const iconoVariacion = document.createElement('i');
+iconoVariacion.classList.add('fa-regular', calcularVariacionIcono(cotizacionesOrdenadas[moneda], index));
+celdaVariacion.appendChild(iconoVariacion);
+celdaVariacion.classList.add('columna-variacion');
+filaMoneda.appendChild(celdaVariacion);
 
-        cuerpoTabla.appendChild(filaMoneda);
+cuerpoTabla.appendChild(filaMoneda);
+
       });
     });
-
-    actualizarGrafico(nombreMoneda);
   }
+
+// Función para calcular el ícono de variación
+function calcularVariacionIcono(cotizaciones, index) {
+  if (index === 0 || !cotizaciones[index - 1]) {
+    return calcularVariacionIconoDirecto(cotizaciones[index]);
+  }
+
+  const cotizacionActual = cotizaciones[index];
+  const cotizacionAnterior = cotizaciones[index - 1];
+
+  // Comparar la fecha para decidir si ha subido o bajado
+  if (cotizacionActual.fechaActualizacion > cotizacionAnterior.fechaActualizacion) {
+    return 'fa-circle-up'; // Subió
+  } else if (cotizacionActual.fechaActualizacion < cotizacionAnterior.fechaActualizacion) {
+    return 'fa-circle-down'; // Bajó
+  } else {
+    return calcularVariacionIconoDirecto(cotizaciones[index]);
+  }
+}
+
+function calcularVariacionIconoDirecto(cotizacion) {
+  const variacion = parseFloat(cotizacion.venta) - parseFloat(cotizacion.compra);
+  if (variacion > 0) {
+    return 'fa-circle-up'; // Subió
+  } else if (variacion < 0) {
+    return 'fa-circle-down'; // Bajó
+  } else {
+    return 'fa-circle'; // Sin cambios
+  }
+}
+
 
   // Función para formatear la fecha
   function formatoFecha(fecha) {
@@ -471,103 +505,234 @@ document.addEventListener('DOMContentLoaded', function () {
     return fechaObj.toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
   }
 
-  // Función para actualizar el gráfico
+  // Función para obtener un color aleatorio
+  function getRandomColor() {
+    const letters = "0123456789ABCDEF";
+    let color = "#";
+    for (let i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+  }
+
+  // Función para actualizar el gráfico cuando se selecciona "Seleccionar todos"
+  function actualizarGraficoNull(nombreMoneda) {
+    if (chart) {
+      chart.destroy();
+    }
+
+    // Filtrar y ordenar cotizaciones por fecha ascendente
+    const cotizacionesFiltradas = cotizaciones.sort((b, a) => new Date(a.fechaActualizacion) - new Date(b.fechaActualizacion));
+
+    const labels = [];
+    const datasets = [];
+
+    // Obtener todas las monedas disponibles
+    const monedasDisponibles = Array.from(new Set(cotizaciones.map(cotizacion => cotizacion.nombre)));
+
+    // Colores aleatorios para las líneas del gráfico
+    const colores = [];
+
+    // Asignar colores únicos a cada moneda
+    monedasDisponibles.forEach((moneda, index) => {
+      const color = getRandomColor();
+      colores.push(color);
+
+      const dataCompra = [];
+
+      cotizacionesFiltradas.forEach(cotizacion => {
+        if (cotizacion.nombre === moneda) {
+          labels.unshift(formatoFecha(cotizacion.fechaActualizacion).slice(0, 10)); // Reducir a solo la fecha
+          const compra = typeof cotizacion.compra === "string"
+            ? parseFloat(cotizacion.compra.replace("$", "").replace(",", "."))
+            : cotizacion.compra;
+          dataCompra.unshift(compra);
+        }
+      });
+
+      datasets.push({
+        label: moneda,
+        data: dataCompra,
+        backgroundColor: color,
+        borderColor: color,
+        borderWidth: 1,
+      });
+    });
+
+    chart = new Chart(ctx, {
+      type: "line",
+      data: {
+        labels: labels,
+        datasets: datasets,
+      },
+      options: {
+        plugins: {
+          title: {
+            display: true,
+            text: 'Precio de Compra',
+            font: {
+              size: 20
+            }
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: false,
+            title: {
+              display: true,
+              text: "Precios",
+            },
+            ticks: {
+              stepSize: 50,
+            },
+          },
+          x: {
+            ticks: {
+              autoSkip: true,
+              maxTicksLimit: 10 // Limitar el número de etiquetas en el eje x para hacerlas más pequeñas
+            }
+          }
+        },
+      },
+    });
+  }
+
+  // Función para actualizar el gráfico cuando se selecciona una moneda específica
   function actualizarGrafico(nombreMoneda) {
     if (chart) {
       chart.destroy();
     }
 
+    // Filtrar y ordenar cotizaciones por fecha ascendente
+    const cotizacionesFiltradas = cotizaciones.filter(cotizacion =>
+      !nombreMoneda || cotizacion.nombre === mapeoCombobox[nombreMoneda]
+    ).sort((b, a) => new Date(a.fechaActualizacion) - new Date(b.fechaActualizacion));
+
     const labels = [];
-    const datasets = [];
+    const compraData = [];
+    const ventaData = [];
 
-    // Agrupar cotizaciones por nombre de moneda
-    const cotizacionesPorMoneda = {};
-    cotizaciones.forEach(cotizacion => {
-      const nombreMoneda = cotizacion.nombre;
-      if (!cotizacionesPorMoneda[nombreMoneda]) {
-        cotizacionesPorMoneda[nombreMoneda] = [];
-      }
-      cotizacionesPorMoneda[nombreMoneda].push(cotizacion);
-    });
-
-    // Construir datasets para cada moneda
-    Object.keys(cotizacionesPorMoneda).forEach(moneda => {
-      const data = [];
-      const monedaData = cotizacionesPorMoneda[moneda];
-      monedaData.forEach(cotizacion => {
-        data.push(parseFloat(cotizacion.compra.replace('$', '').replace(',', '.')));
-      });
-
-      datasets.push({
-        label: moneda,
-        data: data,
-        backgroundColor: 'rgba(54, 162, 235, 0.2)',
-        borderColor: 'rgba(54, 162, 235, 1)',
-        borderWidth: 1
-      });
+    cotizacionesFiltradas.forEach(cotizacion => {
+      labels.unshift(formatoFecha(cotizacion.fechaActualizacion).slice(0, 10)); // Reducir a solo la fecha
+      const compra = typeof cotizacion.compra === "string"
+        ? parseFloat(cotizacion.compra.replace("$", "").replace(",", "."))
+        : cotizacion.compra;
+      const venta = typeof cotizacion.venta === "string"
+        ? parseFloat(cotizacion.venta.replace("$", "").replace(",", "."))
+        : cotizacion.venta;
+      compraData.unshift(compra);
+      ventaData.unshift(venta);
     });
 
     chart = new Chart(ctx, {
-      type: 'bar',
+      type: "line",
       data: {
-        labels: labels, // Aquí deberían ir las fechas, pero necesitas definirlas correctamente
-        datasets: datasets
+        labels: labels,
+        datasets: [{
+          label: `Compra de ${nombreMoneda}`,
+          data: compraData,
+          backgroundColor: "rgba(54, 162, 235, 0.2)",
+          borderColor: "rgba(54, 162, 235, 1)",
+          borderWidth: 1
+        },
+        {
+          label: `Venta de ${nombreMoneda}`,
+          data: ventaData,
+          backgroundColor: "rgba(255, 99, 132, 0.2)",
+          borderColor: "rgba(255, 99, 132, 1)",
+          borderWidth: 1
+        }]
       },
       options: {
+        plugins: {
+          title: {
+            display: true,
+            text: `Cotizaciones de ${nombreMoneda}`,
+            font: {
+              size: 20
+            }
+          }
+        },
         scales: {
           y: {
-            beginAtZero: true
+            beginAtZero: false,
+            title: {
+              display: true,
+              text: "Precios",
+            },
+            ticks: {
+              stepSize: 50,
+            },
+          },
+          x: {
+            ticks: {
+              autoSkip: true,
+              maxTicksLimit: 10 // Limitar el número de etiquetas en el eje x para hacerlas más pequeñas
+            }
           }
-        }
-      }
+        },
+      },
     });
   }
 
-  // Función para calcular el ícono de variación
-  function calcularVariacionIcono(cotizacion) {
-    const variacion = parseFloat(cotizacion.venta) - parseFloat(cotizacion.compra);
-    if (variacion > 0) {
-      return 'fa-circle-up';
-    } else if (variacion < 0) {
-      return 'fa-circle-down';
-    } else {
-      return 'fa-circle';
-    }
-  }
-
-  // Evento al hacer clic en el icono de filtro
-  const iconoFiltro = document.querySelector('.fa-solid.fa-filter');
-  if (iconoFiltro) {
-    iconoFiltro.addEventListener('click', function () {
-      const monedaSeleccionada = comboBox.value;
-      cargarCotizaciones(monedaSeleccionada);
-    });
-  }
-
-  // Evento para abrir el cuadro de diálogo modal al hacer clic en "Compartir Información"
-  const compartirInfoLink = document.querySelector('.mail .Texto-info');
-  compartirInfoLink.addEventListener('click', function (event) {
-    event.preventDefault();
-
-    // Abrir modal
-    const modal = document.getElementById('modal');
-    modal.style.display = 'block';
-
-    // Cerrar modal al hacer clic en el botón "Cerrar" o fuera del contenido del modal
-    const cerrarModal = document.getElementById('cerrarModal');
-    cerrarModal.addEventListener('click', function () {
-      modal.style.display = 'none';
-    });
-
-    // Cerrar modal al hacer clic fuera del contenido del modal
-    window.onclick = function(event) {
-      if (event.target == modal) {
-        modal.style.display = "none";
-      }
-    }
+  // Evento change del combobox para cargar las cotizaciones correspondientes
+  comboBox.addEventListener('change', function () {
+    const nombreMoneda = this.value;
+    cargarCotizaciones(nombreMoneda);
   });
 
-  // Función inicial para cargar todas las cotizaciones al cargar la página
-  cargarCotizaciones();
+
+    // Evento al hacer clic en el icono de filtro
+    const iconoFiltro = document.querySelector('.fa-solid.fa-filter');
+    if (iconoFiltro) {
+      iconoFiltro.addEventListener('click', function () {
+        const monedaSeleccionada = comboBox.value;
+        cargarCotizaciones(monedaSeleccionada);
+      });
+    }
+  
+// Función para abrir la modal
+const abrirModal = () => {
+  const modal = document.getElementById('modal');
+  modal.style.display = 'block';
+
+  // Agregar un evento para cerrar la modal al hacer clic fuera de ella
+  window.addEventListener('click', outsideClick);
+}
+
+// Función para cerrar la modal
+const closeModal = () => {
+  const modal = document.getElementById('modal');
+  modal.style.display = 'none';
+
+  // Remover el evento al cerrar la modal
+  window.removeEventListener('click', outsideClick);
+}
+
+// Función para cerrar la modal si se hace clic fuera de ella
+const outsideClick = (event) => {
+  const modal = document.getElementById('modal');
+  if (event.target == modal) {
+    closeModal();
+  }
+}
+
+// Evento para abrir la modal al hacer clic en el enlace
+const compartirInfoLink = document.querySelector('.mail .Texto-info');
+compartirInfoLink.addEventListener('click', function (event) {
+  event.preventDefault();
+  abrirModal();
+});
+
+// Evento para cerrar la modal al hacer clic en el botón "Cerrar"
+const cerrarBtn = document.getElementById('cerrarModal');
+cerrarBtn.addEventListener('click', function (event) {
+  event.preventDefault();
+  closeModal();
+});
+
+
+  // Cargar las cotizaciones por defecto al cargar la página
+  cargarCotizaciones("Seleccionar todos");
 });
 
