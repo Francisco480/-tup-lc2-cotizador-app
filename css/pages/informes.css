@@ -436,7 +436,7 @@ td {
     height: 100%;
     overflow: auto;
     
-    background-color: rgba(255, 255, 255, 0.089); /* Fondo semi-transparente */
+    background-color: rgba(166, 160, 160, 0.459); /* Fondo semi-transparente */
   }
   
   .modal-content {
