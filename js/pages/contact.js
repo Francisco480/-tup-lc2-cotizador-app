@@ -1,28 +1,40 @@
-document.addEventListener('DOMContentLoaded', function() {
-    const form = document.querySelector('.form');
+document.addEventListener('DOMContentLoaded', function () {
+    const form = document.querySelector('.form'); // Selección del formulario por su clase
 
-    form.addEventListener('submit', function(event) {
-        event.preventDefault(); // Evitar el envío del formulario por defecto
+    // Configuración de EmailJS
+    emailjs.init('hvwQ-bV8E0i3YrkrW'); // Reemplaza YOUR_USER_ID con tu User ID de EmailJS
 
-        // Configuración de EmailJS (reemplaza con tus propios valores)
-        emailjs.init('tu_user_id_de_emailjs'); // Reemplaza 'tu_user_id_de_emailjs' con tu User ID de EmailJS
+    // Manejo del envío del formulario
+    form.addEventListener('submit', function (event) {
+        event.preventDefault(); // Evita que el formulario se envíe automáticamente
 
-        // Variables con los datos del formulario
-        let formData = {
-            Nombre: document.getElementById('Nombre').value,
-            email: document.getElementById('email').value,
-            message: document.getElementById('message').value
+        // Recolectar datos del formulario
+        const formData = new FormData(form);
+        const name = formData.get('Nombre');
+        const email = formData.get('email');
+        const message = formData.get('message');
+
+        // Configuración del servicio de EmailJS
+        const serviceID = 'service_15etgsb'; // Reemplaza YOUR_SERVICE_ID con tu Service ID de EmailJS
+        const templateID = 'template_72s4h35'; // Reemplaza YOUR_TEMPLATE_ID con tu Template ID de EmailJS
+
+        // Objeto con los datos del email a enviar
+        const emailParams = {
+            from_name: name,
+            from_email: email,
+            message: message
         };
 
-        // Enviar el email mediante EmailJS
-        emailjs.send('tu_service_id', 'tu_template_id', formData)
-            .then(function(response) {
-                console.log('Email enviado con éxito!', response.status, response.text);
-                alert('Email enviado con éxito!');
-                form.reset(); // Limpiar el formulario después de enviar
-            }, function(error) {
+        // Envío del email utilizando EmailJS
+        emailjs.send(serviceID, templateID, emailParams)
+            .then(function () {
+                alert('Email enviado correctamente.');
+                form.reset(); // Limpiar el formulario después del envío exitoso
+            }, function (error) {
                 console.error('Error al enviar el email:', error);
-                alert('Error al enviar el email. Por favor, inténtelo nuevamente más tarde.');
+                alert('Hubo un problema al enviar el email. Por favor, inténtelo más tarde.');
             });
     });
 });
+
+
