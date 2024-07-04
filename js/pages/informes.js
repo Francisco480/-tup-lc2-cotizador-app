@@ -278,7 +278,7 @@ document.addEventListener("DOMContentLoaded", function () {
               text: "Precios",
             },
             ticks: {
-              stepSize: 50,
+              stepSize: 20,
             },
           },
           x: {
