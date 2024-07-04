@@ -12,7 +12,7 @@
     <script src="js/common.js" defer></script>
     <script src="js/pages/informes.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script><!--Aca para el graficador-->
-    
+    <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
 </head>
 
 <body>
@@ -184,11 +184,11 @@
                 <h2 style="font-weight: bold;">DATOS DEL DESTINATARIO</h2>
                 <form>
                     <label for="nombre">Nombre:</label><br>
-                    <input type="text" id="nombre" name="nombre" required><br><br>
+                    <input type="text" id="Nombre" name="nombre" required><br><br>
                     <label for="email">Email:</label><br>
                     <input type="email" id="email" name="email" required><br><br>
                     <label for="mensaje">Mensaje:</label><br>
-                    <textarea id="mensaje" name="mensaje" rows="4" cols="50"></textarea><br><br>
+                    <textarea id="message" name="mensaje" rows="4" cols="50"></textarea><br><br>
                     <button type="button" id="cerrarModal">Cerrar</button>
                     <input type="submit" value="Enviar">
                 </form>

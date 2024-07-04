@@ -698,6 +698,14 @@ const abrirModal = () => {
 
   // Agregar un evento para cerrar la modal al hacer clic fuera de ella
   window.addEventListener('click', outsideClick);
+
+  // Agregar evento para cerrar la modal al hacer clic en la cruz (X)
+  const cerrarSpan = document.querySelector('span.close');
+  cerrarSpan.addEventListener('click', closeModal);
+
+  // Evento para cerrar la modal al hacer clic en el botón "Cerrar"
+  const cerrarModalBtn = document.getElementById('cerrarModal');
+  cerrarModalBtn.addEventListener('click', closeModal);
 }
 
 // Función para cerrar la modal
@@ -705,14 +713,16 @@ const closeModal = () => {
   const modal = document.getElementById('modal');
   modal.style.display = 'none';
 
-  // Remover el evento al cerrar la modal
+  // Remover eventos al cerrar la modal
   window.removeEventListener('click', outsideClick);
+  const cerrarSpan = document.querySelector('span.close');
+  cerrarSpan.removeEventListener('click', closeModal);
 }
 
 // Función para cerrar la modal si se hace clic fuera de ella
 const outsideClick = (event) => {
   const modal = document.getElementById('modal');
-  if (event.target == modal) {
+  if (event.target === modal) {
     closeModal();
   }
 }
@@ -722,13 +732,6 @@ const compartirInfoLink = document.querySelector('.mail .Texto-info');
 compartirInfoLink.addEventListener('click', function (event) {
   event.preventDefault();
   abrirModal();
-});
-
-// Evento para cerrar la modal al hacer clic en el botón "Cerrar"
-const cerrarBtn = document.getElementById('cerrarModal');
-cerrarBtn.addEventListener('click', function (event) {
-  event.preventDefault();
-  closeModal();
 });
 
 
