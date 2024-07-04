@@ -479,9 +479,9 @@ function calcularVariacionIcono(cotizaciones, index) {
 
   // Comparar la fecha para decidir si ha subido o bajado
   if (cotizacionActual.fechaActualizacion > cotizacionAnterior.fechaActualizacion) {
-    return 'fa-circle-up'; // Subió
+    return 'fa-circle-down'; // Subió
   } else if (cotizacionActual.fechaActualizacion < cotizacionAnterior.fechaActualizacion) {
-    return 'fa-circle-down'; // Bajó
+    return 'fa-circle-up'; // Bajó
   } else {
     return calcularVariacionIconoDirecto(cotizaciones[index]);
   }
@@ -490,10 +490,13 @@ function calcularVariacionIcono(cotizaciones, index) {
 function calcularVariacionIconoDirecto(cotizacion) {
   const variacion = parseFloat(cotizacion.venta) - parseFloat(cotizacion.compra);
   if (variacion > 0) {
-    return 'fa-circle-up'; // Subió
+    return 'fa-circle-down'; // Subió
   } else if (variacion < 0) {
-    return 'fa-circle-down'; // Bajó
-  } else {
+    return 'fa-circle-up'; // Bajó
+  } else if (variacion = 0) {
+    return 'fa-circle';
+  } 
+  else {
     return 'fa-circle'; // Sin cambios
   }
 }
