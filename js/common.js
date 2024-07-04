@@ -153,8 +153,22 @@ fetch("https://dolarapi.com/v1/dolares")
     }
 ];
 
+const legajos = [
+  {
+    legajo: "53393",
+    
+  },
+  {
+    legajo: "53350",
+  },
+  {
+    legajo: "53640",
+  }
+];
+
 let index = 0;
 const opinionContainer = document.getElementById('opinionContainer');
+const desarrolladoPorContainer = document.querySelector('.desarrollado-por');
 
 // Función para cambiar la opinión cada 5 segundos
 function cambiarOpinion() {
@@ -170,42 +184,27 @@ function cambiarOpinion() {
     index = (index + 1) % opiniones.length; // Avanza al siguiente índice circularmente
 }
 
+function rotarDesarrollador() {
+  desarrolladoPorContainer.innerHTML = `
+      <li>
+          <p><b>Desarrollado por:</b></p>
+          <p>${opiniones[index].nombre} (${legajos[index].legajo})</p>
+          <p>TUP 08 - 2024</p>
+      </li>
+  `;
+  index = (index + 1) % opiniones.length;
+}
+
+
+
 // Cambiar la opinión inicial
 cambiarOpinion();
+
+rotarDesarrollador();
 
 // Cambiar la opinión cada 5 segundos
 setInterval(cambiarOpinion, 5000);
 
-
-
-
-/*
-//ACÁ PRUEBO EL TEMA DE GUARDAR EN EL STORAGE
-// Función para manejar el clic en la estrella
-function toggleFavorito(event) {
-  const star = event.target;
-  const tipoMoneda = star.parentElement.querySelector('h3').textContent;
-  const cotizacion = arregloIndex.find(item => item.nombre === tipoMoneda);
-  const ahora = new Date();
-  const fechaHora = `${ahora.getDate()}/${ahora.getMonth() + 1}/${ahora.getFullYear()} ${ahora.getHours().toString().padStart(2, '0')}:${ahora.getMinutes().toString().padStart(2, '0')}hs`;
-
-  const clave = `favorito_${tipoMoneda}_${fechaHora}`;
-
-  if (localStorage.getItem(clave)) {
-      mostrarMensajeError(`La cotización de ${tipoMoneda} ya se encuentra almacenada para la fecha y hora actual.`);
-  } else {
-      localStorage.setItem(clave, JSON.stringify(cotizacion));
-      mostrarMensajeExito(`La cotización de ${tipoMoneda} ha sido agregada correctamente.`);
-  }
-}
-
-// Agregar evento clic a todas las estrellas
-document.addEventListener('DOMContentLoaded', () => {
-  const estrellas = document.querySelectorAll('.fa-star');
-  estrellas.forEach(star => {
-      star.addEventListener('click', toggleFavorito);
-  });
-});
-*/
+setInterval(rotarDesarrollador, 5000); // Rota el desarrollador cada 5 segundos
 
 
