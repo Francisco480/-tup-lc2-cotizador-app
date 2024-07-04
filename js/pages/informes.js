@@ -153,86 +153,132 @@ function calcularVariacionIconoDirecto(cotizacion) {
   }
 
   // Función para actualizar el gráfico cuando se selecciona "Seleccionar todos"
-  function actualizarGraficoNull(nombreMoneda) {
-    if (chart) {
+function actualizarGraficoNull(nombreMoneda) {
+  if (chart) {
       chart.destroy();
-    }
+  }
 
-    // Filtrar y ordenar cotizaciones por fecha ascendente
-    const cotizacionesFiltradas = cotizaciones.sort((b, a) => new Date(a.fechaActualizacion) - new Date(b.fechaActualizacion));
+  // Filtrar y ordenar cotizaciones por fecha ascendente
+  const cotizacionesFiltradas = cotizaciones.sort((b, a) => new Date(a.fechaActualizacion) - new Date(b.fechaActualizacion));
 
-    const labels = [];
-    const datasets = [];
+  const labels = [];
+  const dataCompra = [];
+  const dataVariacion = [];
+  const backgroundColors = [];
+  const borderColors = [];
 
-    // Obtener todas las monedas disponibles
-    const monedasDisponibles = Array.from(new Set(cotizaciones.map(cotizacion => cotizacion.nombre)));
+  // Obtener todas las monedas disponibles
+  const monedasDisponibles = Array.from(new Set(cotizaciones.map(cotizacion => cotizacion.nombre)));
 
-    // Colores aleatorios para las líneas del gráfico
-    const colores = [];
+  // Asignar colores únicos a cada moneda y obtener los valores de compra y variación
+  monedasDisponibles.forEach((moneda) => {
+      labels.push(moneda);
 
-    // Asignar colores únicos a cada moneda
-    monedasDisponibles.forEach((moneda, index) => {
-      const color = getRandomColor();
-      colores.push(color);
+      const cotizacionesMoneda = cotizacionesFiltradas.filter(c => c.nombre === moneda);
+      if (cotizacionesMoneda.length > 0) {
+          const compraActual = typeof cotizacionesMoneda[0].compra === "string"
+              ? parseFloat(cotizacionesMoneda[0].compra.replace("$", "").replace(",", "."))
+              : cotizacionesMoneda[0].compra;
+          dataCompra.push(compraActual);
 
-      const dataCompra = [];
+          // Calcular la variación si hay datos anteriores
+          if (cotizacionesMoneda.length > 1) {
+              const compraAnterior = typeof cotizacionesMoneda[1].compra === "string"
+                  ? parseFloat(cotizacionesMoneda[1].compra.replace("$", "").replace(",", "."))
+                  : cotizacionesMoneda[1].compra;
+              const variacion = compraActual - compraAnterior;
+              dataVariacion.push(variacion);
+          } else {
+              dataVariacion.push(0); // Si no hay cotización anterior, variación es 0
+          }
 
-      cotizacionesFiltradas.forEach(cotizacion => {
-        if (cotizacion.nombre === moneda) {
-          labels.unshift(formatoFecha(cotizacion.fechaActualizacion).slice(0, 10)); // Reducir a solo la fecha
-          const compra = typeof cotizacion.compra === "string"
-            ? parseFloat(cotizacion.compra.replace("$", "").replace(",", "."))
-            : cotizacion.compra;
-          dataCompra.unshift(compra);
-        }
-      });
+          const color = getRandomColor();
+          backgroundColors.push(color);
+          borderColors.push(color);
+      } else {
+          dataCompra.push(0); // Si no hay cotización para la moneda, poner 0
+          dataVariacion.push(0);
+          const color = getRandomColor();
+          backgroundColors.push(color);
+          borderColors.push(color);
+      }
+  });
 
-      datasets.push({
-        label: moneda,
-        data: dataCompra,
-        backgroundColor: color,
-        borderColor: color,
-        borderWidth: 1,
-      });
-    });
-
-    chart = new Chart(ctx, {
-      type: "line",
+  chart = new Chart(ctx, {
+      type: "bar",
       data: {
-        labels: labels,
-        datasets: datasets,
+          labels: labels,
+          datasets: [
+              {
+                  label: 'Precio de Compra',
+                  data: dataCompra,
+                  backgroundColor: backgroundColors,
+                  borderColor: borderColors,
+                  borderWidth: 1,
+              },
+              {
+                  label: 'Variación',
+                  data: dataVariacion,
+                  backgroundColor: backgroundColors.map(color => hexToRGBA(color, 0.5)),
+                  borderColor: borderColors,
+                  borderWidth: 1,
+                  type: 'line' // Mostrar variaciones como línea sobre las barras
+              }
+          ]
       },
       options: {
-        plugins: {
-          title: {
-            display: true,
-            text: 'Precio de Compra',
-            font: {
-              size: 20
-            }
-          }
-        },
-        scales: {
-          y: {
-            beginAtZero: false,
-            title: {
-              display: true,
-              text: "Precios",
-            },
-            ticks: {
-              stepSize: 50,
-            },
+          plugins: {
+              title: {
+                  display: true,
+                  text: 'Precio de Compra y Variación por Moneda',
+                  font: {
+                      size: 20
+                  }
+              }
           },
-          x: {
-            ticks: {
-              autoSkip: true,
-              maxTicksLimit: 2 // Limitar el número de etiquetas en el eje x para hacerlas más pequeñas
-            }
-          }
-        },
+          scales: {
+              y: {
+                  beginAtZero: true,
+                  title: {
+                      display: true,
+                      text: "Precios",
+                  },
+                  ticks: {
+                      stepSize: 50,
+                  },
+              },
+              x: {
+                  title: {
+                      display: true,
+                      text: "Monedas",
+                  },
+                  ticks: {
+                      autoSkip: false,
+                  }
+              }
+          },
       },
-    });
+  });
+}
+
+// Función para obtener un color aleatorio
+function getRandomColor() {
+  const letters = '0123456789ABCDEF';
+  let color = '#';
+  for (let i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
   }
+  return color;
+}
+
+// Función para convertir color hexadecimal a rgba con transparencia
+function hexToRGBA(hex, alpha) {
+  let r = parseInt(hex.slice(1, 3), 16);
+  let g = parseInt(hex.slice(3, 5), 16);
+  let b = parseInt(hex.slice(5, 7), 16);
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
+
 
   // Función para actualizar el gráfico cuando se selecciona una moneda específica
   function actualizarGrafico(nombreMoneda) {
@@ -376,3 +422,89 @@ compartirInfoLink.addEventListener('click', function (event) {
   cargarCotizaciones("Seleccionar todos");
 });
 
+
+
+
+
+
+/* // Función para actualizar el gráfico cuando se selecciona "Seleccionar todos"
+  function actualizarGraficoNull(nombreMoneda) {
+    if (chart) {
+      chart.destroy();
+    }
+
+    // Filtrar y ordenar cotizaciones por fecha ascendente
+    const cotizacionesFiltradas = cotizaciones.sort((b, a) => new Date(a.fechaActualizacion) - new Date(b.fechaActualizacion));
+
+    const labels = [];
+    const datasets = [];
+
+    // Obtener todas las monedas disponibles
+    const monedasDisponibles = Array.from(new Set(cotizaciones.map(cotizacion => cotizacion.nombre)));
+
+    // Colores aleatorios para las líneas del gráfico
+    const colores = [];
+
+    // Asignar colores únicos a cada moneda
+    monedasDisponibles.forEach((moneda, index) => {
+      const color = getRandomColor();
+      colores.push(color);
+
+      const dataCompra = [];
+
+      cotizacionesFiltradas.forEach(cotizacion => {
+        if (cotizacion.nombre === moneda) {
+          labels.unshift(formatoFecha(cotizacion.fechaActualizacion).slice(0, 10)); // Reducir a solo la fecha
+          const compra = typeof cotizacion.compra === "string"
+            ? parseFloat(cotizacion.compra.replace("$", "").replace(",", "."))
+            : cotizacion.compra;
+          dataCompra.unshift(compra);
+        }
+      });
+
+      datasets.push({
+        label: moneda,
+        data: dataCompra,
+        backgroundColor: color,
+        borderColor: color,
+        borderWidth: 1,
+      });
+    });
+
+    chart = new Chart(ctx, {
+      type: "line",
+      data: {
+        labels: labels,
+        datasets: datasets,
+      },
+      options: {
+        plugins: {
+          title: {
+            display: true,
+            text: 'Precio de Compra',
+            font: {
+              size: 20
+            }
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: false,
+            title: {
+              display: true,
+              text: "Precios",
+            },
+            ticks: {
+              stepSize: 50,
+            },
+          },
+          x: {
+            ticks: {
+              autoSkip: true,
+              maxTicksLimit: 2 // Limitar el número de etiquetas en el eje x para hacerlas más pequeñas
+            }
+          }
+        },
+      },
+    });
+  }*/
