@@ -1,11 +1,5 @@
 
-
-
-
-
-
-
-// Variables globales
+//Variables globales
 let arregloIndex = []; // Para almacenar las cotizaciones obtenidas de la API
 let mostrarTodos = true; // Estado para mostrar todas las cotizaciones o una sola
 
@@ -49,7 +43,7 @@ function cargarCotizaciones() {
             // Agregar cotizaciones específicas
             arregloIndex.push(...data);
 
-            // Mostrar las cotizaciones en la interfaz según el estado actual
+            // Mostrar las cotizaciones segun su estado actual
             if (mostrarTodos) {
                 mostrarCotizaciones();
             }
@@ -113,7 +107,7 @@ function mostrarCotizaciones() {
 
         // Agregar evento clic a la estrella de cada ítem
         const star = itemDiv.querySelector('.fa-star');
-        star.addEventListener('click', toggleFavorito);
+        star.addEventListener('click', estrellaFavorito);
     });
 }
 
@@ -145,7 +139,7 @@ function mostrarCotizacionIndividual(cotizacion) {
 
     // Agregar evento clic a la estrella
     const star = itemDiv.querySelector('.fa-star');
-    star.addEventListener('click', toggleFavorito);
+    star.addEventListener('click', estrellaFavorito);
 }
 
 // Función para mostrar un mensaje de error
@@ -175,15 +169,15 @@ function actualizarCada5Minutos() {
 // Cargar las cotizaciones al cargar la página
 window.onload = cargarCotizaciones;
 
-// Escuchar clic en el icono de filtro
+// clic en el icono de filtro
 document.querySelector('.icono-filtro').addEventListener('click', () => {
     handleChange(); // Manejar el cambio de selección de cotización
 });
 
 // Función para manejar el clic en la estrella
-function toggleFavorito(event) {
+function estrellaFavorito(event) {
     const star = event.target;
-    star.classList.toggle('active'); // Activar/desactivar clase 'active'
+    star.classList.toggle('active'); // Activar/desactivar clase "active"
 
     // Obtener la cotización asociada al ítem
     const tipoMoneda = star.parentElement.querySelector('h3').textContent;
@@ -209,7 +203,7 @@ function toggleFavorito(event) {
     if (existeCotizacion) {
         alert("No se puede guardar esta cotización. Ya existe una cotización guardada para esta moneda en el mismo segundo del mismo día.");
         star.classList.remove('active'); // Desactivar la estrella si ya existe
-        return; // No continuar con el guardado
+        return; // Dejo de guardar
     }
 
     // Guardar o eliminar la cotización favorita
@@ -242,7 +236,7 @@ function toggleFavorito(event) {
 document.addEventListener('DOMContentLoaded', () => {
     const estrellas = document.querySelectorAll('.fa-star');
     estrellas.forEach(star => {
-        star.addEventListener('click', toggleFavorito);
+        star.addEventListener('click', estrellaFavorito);
     });
 });
 
