@@ -141,8 +141,6 @@ document.addEventListener("DOMContentLoaded", function () {
       return "fa-circle-down"; // Subió
     } else if (variacion < 0) {
       return "fa-circle-up"; // Bajó
-    } else if ((variacion = 0)) {
-      return "fa-circle";
     } else {
       return "fa-circle"; // Sin cambios
     }
