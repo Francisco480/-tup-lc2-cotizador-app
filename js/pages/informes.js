@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", function () {
     "Dólar Mayorista": "Mayorista",
     "Dólar Cripto": "Cripto",
     "Dólar Tarjeta": "Tarjeta",
-    Euro: "Euro",
+    "Euro": "Euro",
     "Real Brasileño": "Real Brasileño",
     "Peso Chileno": "Peso Chileno",
     "Peso Uruguayo": "Peso Uruguayo",
