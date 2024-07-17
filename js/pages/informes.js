@@ -496,7 +496,7 @@ form.addEventListener("submit", function (event) {
 
   // Objeto con los datos del email a enviar
   const emailParams = {
-    to: "polivelizfrancisco@gmail.com", // Direcciones separadas por coma
+    to: "hgerardo@gmail.com, sbruselario@gmail.com", // Direcciones separadas por coma
     from_name: name,
     from_email: email,
     message: message,
