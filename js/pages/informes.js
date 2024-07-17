@@ -192,8 +192,11 @@ function actualizarGraficoNull(nombreMoneda) {
           )
         : cotizacionesMoneda[0]?.compra || 0;
 
-    // Obtener la compra más antigua (si existe)
+    // Inicializar compraAnterior y variación
     let compraAnterior = 0;
+    let variacion = 0;
+
+    // Si hay más de una cotización, calcular compraAnterior y variación
     if (cotizacionesMoneda.length > 1) {
       compraAnterior =
         typeof cotizacionesMoneda[cotizacionesMoneda.length - 1]?.compra ===
@@ -204,10 +207,10 @@ function actualizarGraficoNull(nombreMoneda) {
                 .replace(",", ".")
             )
           : cotizacionesMoneda[cotizacionesMoneda.length - 1]?.compra || 0;
+      variacion = compraAnterior - compraActual;
     }
 
-    // Calcular la variación
-    const variacion = compraAnterior - compraActual;
+    // Añadir datos a los arrays correspondientes
     dataCompra.push(compraActual);
     dataVariacion.push(variacion);
 
@@ -276,24 +279,23 @@ function actualizarGraficoNull(nombreMoneda) {
   });
 }
 
-
-  // Función para obtener un color aleatorio
-  function getRandomColor() {
-    const letters = "0123456789ABCDEF";
-    let color = "#";
-    for (let i = 0; i < 6; i++) {
-      color += letters[Math.floor(Math.random() * 16)];
-    }
-    return color;
+// Función para obtener un color aleatorio
+function getRandomColor() {
+  const letters = "0123456789ABCDEF";
+  let color = "#";
+  for (let i = 0; i < 6; i++) {
+    color += letters[Math.floor(Math.random() * 16)];
   }
+  return color;
+}
 
-  // Función para convertir color hexadecimal a rgba con transparencia
-  function hexToRGBA(hex, alpha) {
-    let r = parseInt(hex.slice(1, 3), 16);
-    let g = parseInt(hex.slice(3, 5), 16);
-    let b = parseInt(hex.slice(5, 7), 16);
-    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
-  }
+// Función para convertir color hexadecimal a rgba con transparencia
+function hexToRGBA(hex, alpha) {
+  let r = parseInt(hex.slice(1, 3), 16);
+  let g = parseInt(hex.slice(3, 5), 16);
+  let b = parseInt(hex.slice(5, 7), 16);
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
 
   // Función para actualizar el gráfico cuando se selecciona una moneda específica
   function actualizarGrafico(nombreMoneda) {
@@ -475,7 +477,7 @@ compartirInfoLink.addEventListener("click", function (event) {
 });
 
 // Configuración de EmailJS
-emailjs.init("user_yourUserID"); // Reemplaza con tu USER_ID de EmailJS
+emailjs.init("hvwQ-bV8E0i3YrkrW"); // Reemplaza con tu USER_ID de EmailJS
 
 // Manejo del envío del formulario
 const form = document.querySelector(".form");
@@ -489,12 +491,12 @@ form.addEventListener("submit", function (event) {
   const message = formData.get("mensaje");
 
   // Configuración del servicio de EmailJS
-  const serviceID = "your_service_id"; // Reemplaza con tu SERVICE_ID de EmailJS
-  const templateID = "your_template_id"; // Reemplaza con tu TEMPLATE_ID de EmailJS
+  const serviceID = "service_15etgsb"; // Reemplaza con tu SERVICE_ID de EmailJS
+  const templateID = "template_72s4h35"; // Reemplaza con tu TEMPLATE_ID de EmailJS
 
   // Objeto con los datos del email a enviar
   const emailParams = {
-    to: "hgerardo@gmail.com, sbruselario@gmail.com", // Direcciones separadas por coma
+    to: "polivelizfrancisco@gmail.com", // Direcciones separadas por coma
     from_name: name,
     from_email: email,
     message: message,
