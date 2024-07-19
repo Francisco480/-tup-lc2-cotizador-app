@@ -159,7 +159,7 @@ function actualizarGraficoNull(nombreMoneda) {
     chart.destroy();
   }
 
-  // Filtrar y ordenar cotizaciones por fecha ascendente
+  // Filtrar y ordenar cotizaciones por fecha 
   const cotizacionesFiltradas = cotizaciones.sort(
     (a, b) => new Date(b.fechaActualizacion) - new Date(a.fechaActualizacion) 
   );
