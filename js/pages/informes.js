@@ -161,7 +161,7 @@ function actualizarGraficoNull(nombreMoneda) {
 
   // Filtrar y ordenar cotizaciones por fecha ascendente
   const cotizacionesFiltradas = cotizaciones.sort(
-    (a, b) => new Date(b.fechaActualizacion) - new Date(a.fechaActualizacion) //ACÁ
+    (a, b) => new Date(b.fechaActualizacion) - new Date(a.fechaActualizacion) 
   );
 
   const labels = [];
@@ -207,7 +207,7 @@ function actualizarGraficoNull(nombreMoneda) {
                 .replace(",", ".")
             )
           : cotizacionesMoneda[cotizacionesMoneda.length - 1]?.compra || 0;
-      variacion = compraActual - compraAnterior; //ACÁ
+      variacion = compraActual - compraAnterior; 
     }
 
     // Añadir datos a los arrays correspondientes
