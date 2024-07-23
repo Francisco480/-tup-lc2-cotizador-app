@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
-    const form = document.querySelector('.form'); // Selecciono del formulario por su clase
+    const form = document.querySelector('.form'); // Selecciono del formulario por su clase class form
 
     // Configuración de EmailJS
     emailjs.init('hvwQ-bV8E0i3YrkrW'); // Aca va mi YOUR_USER_ID  de EmailJS
@@ -9,10 +9,10 @@ document.addEventListener('DOMContentLoaded', function () {
         event.preventDefault(); // Evita que el formulario se envíe automáticamente
 
         // Recolectar datos del formulario
-        const formData = new FormData(form);
-        const name = formData.get('Nombre');
-        const email = formData.get('email');
-        const message = formData.get('message');
+        const formData = new FormData(form); //mete en formData todo lo que la persona escriba en el form
+        const name = formData.get('Nombre'); //id Nombre
+        const email = formData.get('email'); // id email
+        const message = formData.get('message'); //id message
 
         // Configuración del servicio de EmailJS
         const serviceID = 'service_15etgsb'; // Aca va mi YOUR_SERVICE_ID  de EmailJS

@@ -23,7 +23,7 @@ const mapeoCombobox = {
 function cargarCotizaciones() {
     // Obtener cotizaciones generales (dataDolar)
     fetch("https://dolarapi.com/v1/dolares")
-        .then(response => response.json())
+        .then(response => response.json()) //funcion arrow
         .then(dataDolar => {
             // Limpiar arregloIndex antes de agregar nuevas cotizaciones
             arregloIndex = [];
@@ -32,7 +32,8 @@ function cargarCotizaciones() {
             arregloIndex.push(...dataDolar);
 
             // Obtener cotizaciones específicas
-            return Promise.all([
+            //el promise es un metodo de js que maneja multiples promesas al mismo tiempo
+            return Promise.all([ 
                 fetch("https://dolarapi.com/v1/cotizaciones/eur").then(response => response.json()),
                 fetch("https://dolarapi.com/v1/cotizaciones/brl").then(response => response.json()),
                 fetch("https://dolarapi.com/v1/cotizaciones/clp").then(response => response.json()),
@@ -42,7 +43,6 @@ function cargarCotizaciones() {
         .then(data => {
             // Agregar cotizaciones específicas
             arregloIndex.push(...data);
-
             // Mostrar las cotizaciones segun su estado actual
             if (mostrarTodos) {
                 mostrarCotizaciones();
@@ -69,7 +69,7 @@ function handleChange() {
     } else {
         mostrarTodos = false;
         // Buscar la cotización en arregloIndex
-        const cotizacion = arregloIndex.find(item => item.nombre.toLowerCase().trim() === nombreCotizacion.toLowerCase().trim());
+        const cotizacion = arregloIndex.find(item => item.nombre.toLowerCase().trim() === nombreCotizacion.toLowerCase().trim()); //.trim elimina espacios en blanco al principio y al final. toLowerCase convierte a minúsculas. .find es un metodo que busca la primer coincidencia.
         if (cotizacion) {
             mostrarCotizacionIndividual(cotizacion);
         } else {
@@ -84,7 +84,9 @@ function mostrarCotizaciones() {
     plantillaPrecios.innerHTML = ""; // Limpiar contenido anterior
 
     arregloIndex.forEach(item => {
+        //Recorre el arreglo y crea de forma dinámica cada div por cada moneda. El div que nosotros creamos al principio con html y css.
         const itemDiv = document.createElement('div');
+        //le agrega la clase item al div como la habiamos llamado nosotros en el html
         itemDiv.classList.add('item');
         
         const itemHtml = `
@@ -102,12 +104,14 @@ function mostrarCotizaciones() {
             <i class="fa-solid fa-star"></i>
         `;
         
+        //lo muestra por pantalla con el innerhtml todo lo creado
         itemDiv.innerHTML = itemHtml;
+        //agrega un div hijo para seguir creando dinamicamente el html
         plantillaPrecios.appendChild(itemDiv);
 
         // Agregar evento clic a la estrella de cada ítem
         const star = itemDiv.querySelector('.fa-star');
-        star.addEventListener('click', estrellaFavorito);
+        star.addEventListener('click', estrellaFavorito); //cuando haces click en la estrella llama a la funcion estrellaFavorito
     });
 }
 
@@ -135,11 +139,12 @@ function mostrarCotizacionIndividual(cotizacion) {
     `;
     
     itemDiv.innerHTML = itemHtml;
+    //agrega el div para que exista
     plantillaPrecios.appendChild(itemDiv);
 
     // Agregar evento clic a la estrella
     const star = itemDiv.querySelector('.fa-star');
-    star.addEventListener('click', estrellaFavorito);
+    star.addEventListener('click', estrellaFavorito); //cuando haces click en la estrella llama a la funcion estrellaFavorito
 }
 
 // Función para mostrar un mensaje de error
@@ -154,7 +159,7 @@ function actualizarFechaHora() {
     if (fechaHoraElemento) {
         const ahora = new Date();
         const fechaFormateada = `${ahora.getDate()}/${ahora.getMonth() + 1}/${ahora.getFullYear()}`;
-        const horaFormateada = `${ahora.getHours().toString().padStart(2, '0')}:${ahora.getMinutes().toString().padStart(2, '0')}hs`;
+        const horaFormateada = `${ahora.getHours().toString().padStart(2, '0')}:${ahora.getMinutes().toString().padStart(2, '0')}hs`; //toString convierte el numero a cadena de texto. El padStart asegura que tenga 2 digitos al menos. Agrega 0 si es necesario. 19:9 -- 19:09
         fechaHoraElemento.innerHTML = `<p>Datos Actualizados al ${fechaFormateada} ${horaFormateada}</p>`;
     }
 }
@@ -171,25 +176,26 @@ window.onload = cargarCotizaciones;
 
 // clic en el icono de filtro
 document.querySelector('.icono-filtro').addEventListener('click', () => {
-    handleChange(); // Manejar el cambio de selección de cotización
+    handleChange(); // Manejar el cambio de selección de cotización. Llama a la funcion handleChange que maneja los cambios en el combobox
 });
 
 // Función para manejar el clic en la estrella
 function estrellaFavorito(event) {
-    const star = event.target;
-    star.classList.toggle('active'); // Activar/desactivar clase "active"
+    const star = event.target; //se refiere al elemento en el que se hizo clic, que en este caso es el ícono de estrella.
+    star.classList.toggle('active'); // agrega la clase active si no está presente
 
     // Obtener la cotización asociada al ítem
-    const tipoMoneda = star.parentElement.querySelector('h3').textContent;
-    const cotizacion = arregloIndex.find(item => item.nombre === tipoMoneda);
+    const tipoMoneda = star.parentElement.querySelector('h3').textContent;  //obtiene el nombre de la moneda del contenedor más cercano al ícono de estrella
+    const cotizacion = arregloIndex.find(item => item.nombre === tipoMoneda); //busca en el arreglo arregloIndex la cotización que coincide con el nombre de la moneda.
 
     // Obtener las cotizaciones guardadas actualmente
-    let cotizacionesGuardadas = localStorage.getItem('cotizaciones');
+    //Obtiene las cotizaciones guardadas en localStorage y las convierte de una cadena JSON a un objeto JavaScript. Si no hay datos guardados, inicializa cotizacionesGuardadas como un array vacío.
+    let cotizacionesGuardadas = localStorage.getItem('cotizaciones');  
     cotizacionesGuardadas = cotizacionesGuardadas ? JSON.parse(cotizacionesGuardadas) : [];
 
     // Verificar si ya existe una cotización con la misma fecha, hora, minutos y segundos
-    const existeCotizacion = cotizacionesGuardadas.some(item => {
-        const fechaItem = new Date(item.fechaActualizacion);
+    const existeCotizacion = cotizacionesGuardadas.some(item => { //el .some verifica si algun elemento del array cumple con la condicion pedida.
+        const fechaItem = new Date(item.fechaActualizacion); 
         const fechaCotizacion = new Date(cotizacion.fechaActualizacion);
         return item.nombre === cotizacion.nombre &&
                fechaItem.getDate() === fechaCotizacion.getDate() &&
@@ -216,6 +222,7 @@ function estrellaFavorito(event) {
     }
 
     // Actualizar las cotizaciones guardadas
+    //Busca el índice de la cotización en cotizacionesGuardadas y actualiza el array en función de si la estrella está activa o no.
     const index = cotizacionesGuardadas.findIndex(item => item.nombre === cotizacion.nombre && 
                                                           new Date(item.fechaActualizacion).getTime() === new Date(cotizacion.fechaActualizacion).getTime());
     if (star.classList.contains('active')) {
@@ -224,12 +231,12 @@ function estrellaFavorito(event) {
         }
     } else {
         if (index !== -1) {
-            cotizacionesGuardadas.splice(index, 1);
+            cotizacionesGuardadas.splice(index, 1); //cambiar el contenido de un array eliminando, reemplazando o agregando elementos. Index es el indice desde donde arranca a eliminar y 1 es la cantidad a eliminar.
         }
     }
 
     // Guardar de nuevo en localStorage
-    localStorage.setItem('cotizaciones', JSON.stringify(cotizacionesGuardadas));
+    localStorage.setItem('cotizaciones', JSON.stringify(cotizacionesGuardadas)); //como cadena de texto
 }
 
 // Agregar evento clic a todas las estrellas al cargar el DOM

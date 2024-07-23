@@ -134,7 +134,7 @@ fetch("https://dolarapi.com/v1/dolares")
 
 
   //ACÁ ESTOY PROBANDO EL CAMBIO DE OPINIONES
-  // Array de opiniones (puedes agregar más si quieres)
+  // Array de opiniones
   const opiniones = [
     {
       imagen: "img/fran.png",
